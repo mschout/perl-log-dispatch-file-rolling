@@ -1,11 +1,11 @@
-Log/Dispatch/File/Rolling version 1.01
+Log/Dispatch/File/Rolling version 1.02
 ======================================
 
 -------
 Warning
 -------
 
-This module is mostly untested at the moment. Please review the code 
+This module is only sparsely at the moment. Please review the code 
 before using it. I'd love if you'd give me feedback on errors or 
 success!
 
@@ -24,7 +24,9 @@ Requirements
 
 This module requires Log::Dispatch::File, included in the Log::Dispatch 
 distribution and Log::Log4perl::DateFormat, included in the 
-Log::Log4perl distribution.
+Log::Log4perl distribution. It has only be tested with the versions as 
+stated in Makefile.PL, if you find it works with earlier versions, too, 
+please send me a email. Thank you.
 
 ------------------
 Basic Installation

@@ -10,7 +10,7 @@ use Fcntl ':flock'; # import LOCK_* constants
 
 our @ISA = qw(Log::Dispatch::File);
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 our $TIME_HIRES_AVAILABLE = undef;
 
@@ -226,6 +226,10 @@ Initial coding
 Someone once said "Never feed them after midnight!"---Ok, let's append: "Never submit any code after midnight..."
 
 Now it is working, I also included 4 tests.
+
+=item 1.02
+
+No code change, just updated Makefile.PL to include correct author information and prerequisites.
 
 =back
 
