@@ -10,7 +10,7 @@ use Fcntl ':flock'; # import LOCK_* constants
 
 our @ISA = qw(Log::Dispatch::File);
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 our $TIME_HIRES_AVAILABLE = undef;
 
@@ -44,12 +44,12 @@ sub new {
 	$self->_basic_init(%p);
 
 	# split pathname into path, basename, extension
-	if ($p{filename} =~ /^(.*)\%d\{([^\}])\}(.*)$/) {
+	if ($p{filename} =~ /^(.*)\%d\{([^\}]*)\}(.*)$/) {
 		$self->{rolling_filename_prefix}  = $1;
 		$self->{rolling_filename_postfix} = $3;
 		$self->{rolling_filename_format}  = Log::Log4perl::DateFormat->new($2);
 		$p{filename} = $self->_createFilename();
-	} elsif ($p{filename} =~ /^(.*)\.([^\.]+)$/) {
+	} elsif ($p{filename} =~ /^(.*)(\.[^\.]+)$/) {
 		$self->{rolling_filename_prefix}  = $1;
 		$self->{rolling_filename_postfix} = $2;
 		$self->{rolling_filename_format}  = Log::Log4perl::DateFormat->new('-yyyy-MM-dd');
@@ -79,24 +79,27 @@ sub log_message { # parts borrowed from Log::Dispatch::FileRotate, Thanks!
 	if ( $self->{close} ) {
 		$self->_open_file;
 		$self->_lock();
-		$self->{fh}->print($p{message});
+		my $fh = $self->{fh};
+		print $fh $p{message};
 		$self->_unlock();
-		$self->{fh}->close();
+		close($fh);
 		$self->{fh} = undef;
-	} elsif (defined $self->{fh} and $self->{rolling_fh_pid} eq $$) { # flock won't work after a fork()
+	} elsif (defined $self->{fh} and $self->{rolling_fh_pid}||'' eq $$) { # flock won't work after a fork()
 		my $inode  = (stat($self->{fh}))[1];         # get real inode
 		my $finode = (stat($self->{filename}))[1];   # Stat the name for comparision
 		if(!defined($finode) || $inode != $finode) { # Oops someone moved things on us. So just reopen our log
 			$self->_open_file;
 		}
 		$self->_lock();
-		$self->{fh}->print($p{message});
+		my $fh = $self->{fh};
+		print $fh $p{message};
 		$self->_unlock();
 	} else {
 		$self->{rolling_fh_pid} = $$;
 		$self->_open_file;
 		$self->_lock();
-		$self->{fh}->print($p{message});
+		my $fh = $self->{fh};
+		print $fh $p{message};
 		$self->_unlock();
 	}
 }
@@ -217,6 +220,12 @@ Original version; created by h2xs 1.22 with options
 =item 1.00
 
 Initial coding
+
+=item 1.01
+
+Someone once said "Never feed them after midnight!"---Ok, let's append: "Never submit any code after midnight..."
+
+Now it is working, I also included 4 tests.
 
 =back
 
