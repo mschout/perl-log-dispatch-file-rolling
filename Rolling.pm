@@ -10,7 +10,7 @@ use Fcntl ':flock'; # import LOCK_* constants
 
 our @ISA = qw(Log::Dispatch::File);
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 our $TIME_HIRES_AVAILABLE = undef;
 
@@ -137,7 +137,7 @@ sub _createFilename {
 sub _format {
 	my $self = shift;
 	my $result = $self->{rolling_filename_format}->format($self->_current_time());
-	$result =~ s/\$\$/$$/g;
+	$result =~ s/(\$+)/sprintf('%0'.length($1).'.'.length($1).'u', $$)/eg;
 	return $result;
 }
 
@@ -147,8 +147,8 @@ __END__
 
 =head1 NAME
 
-Log::Dispatch::File::Rolling - Object for logging to date/time/pid stamped 
-files
+Log::Dispatch::File::Rolling - Object for logging to date/time/pid 
+stamped files
 
 =head1 SYNOPSIS
 
@@ -160,7 +160,8 @@ files
                              filename  => 'Somefile%d{yyyyMMdd}.log',
                              mode      => 'append' );
 
-  $file->log( level => 'emerg', message => "I've fallen and I can't get up\n" );
+  $file->log( level => 'emerg',
+              message => "I've fallen and I can't get up\n" );
 
 =head1 ABSTRACT
 
@@ -185,7 +186,8 @@ This module uses flock() to lock the file while writing to it.
 
 =item stamped filenames
 
-This module supports a special tag in the filename that will expand to the current date/time/pid.
+This module supports a special tag in the filename that will expand to 
+the current date/time/pid.
 
 It is the same tag Log::Log4perl::Layout::PatternLayout uses, see 
 L<Log::Log4perl::Layout::PatternLayout>, chapter "Fine-tune the date". 
@@ -196,7 +198,8 @@ See also L<Log::Log4perl::DateFormat> for information about further
 restrictions.
 
 In addition to the format provided by Log::Log4perl::DateFormat this 
-module also supports '$$' for inserting the PID. This should not be 
+module also supports '$' for inserting the PID. Repeat the character to 
+define how many character wide the field should be. This should not be 
 needed regularly as this module also supports logfile sharing between 
 processes, but if you've got a high load on your logfile or a system 
 that doesn't support flock()...
@@ -223,19 +226,29 @@ Initial coding
 
 =item 1.01
 
-Someone once said "Never feed them after midnight!"---Ok, let's append: "Never submit any code after midnight..."
+Someone once said "Never feed them after midnight!"---Ok, let's append: 
+"Never submit any code after midnight..."
 
 Now it is working, I also included 4 tests.
 
 =item 1.02
 
-No code change, just updated Makefile.PL to include correct author information and prerequisites.
+No code change, just updated Makefile.PL to include correct author 
+information and prerequisites.
+
+=item 1.03
+
+Changed the syntax of the '$' format character because I noticed some 
+problems while making Log::Dispatch::File::Alerts. You need to change 
+your configuration!
 
 =back
 
 =head1 SEE ALSO
 
-L<Log::Dispatch::File>, L<Log::Log4perl::Layout::PatternLayout>, http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html, L<Log::Log4perl::DateFormat>, 'perldoc -f flock', 'perldoc -f fork'.
+L<Log::Dispatch::File>, L<Log::Log4perl::Layout::PatternLayout>, 
+http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html, 
+L<Log::Log4perl::DateFormat>, 'perldoc -f flock', 'perldoc -f fork'.
 
 =head1 AUTHOR
 

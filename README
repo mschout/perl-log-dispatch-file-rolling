@@ -1,12 +1,14 @@
-Log/Dispatch/File/Rolling version 1.02
+Log/Dispatch/File/Rolling version 1.03
 ======================================
 
 -------
 Warning
 -------
 
-This module is only sparsely at the moment. Please review the code 
-before using it. I'd love if you'd give me feedback on errors or 
+There has been a change at the format string. Please change your config!
+
+This module is only sparsely tested at the moment. Please review the 
+code before using it. I'd love if you'd give me feedback on errors or 
 success!
 
 --------
