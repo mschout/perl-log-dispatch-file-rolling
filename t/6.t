@@ -6,7 +6,7 @@
 # change 'tests => 1' to 'tests => last_test_to_print';
 
 use Test;
-BEGIN { plan tests => 8 };
+BEGIN { plan tests => 9 };
 use Log::Dispatch;
 use Log::Dispatch::File::Rolling;
 ok(1); # If we made it this far, we're ok.
@@ -21,7 +21,7 @@ ok($dispatcher);
 my %params = (
     name      => 'file',
     min_level => 'debug',
-    filename  => 'logfile',
+    filename  => 'logfile.txt',
 );
 
 my $Rolling = Log::Dispatch::File::Rolling->new(%params);
@@ -35,9 +35,12 @@ ok(1);
 
 #########################4
 
-my $message = 'logtest id ' . int(rand(9999));
+my $message1 = 'logtest id ' . int(rand(9999));
+my $message2 = 'logtest id ' . int(rand(9999));
 
-$dispatcher->log( level   => 'info', message => $message );
+$dispatcher->log( level   => 'info', message => $message1 );
+close $Rolling->{fh}; # disturb internal bookkeeping, must recover from this
+$dispatcher->log( level   => 'info', message => $message2 );
 
 ok(1);
 
@@ -49,7 +52,7 @@ ok(1);
 
 #########################6
 
-my @logfiles = glob("logfile.2*");
+my @logfiles = glob('logfile*.txt');
 
 ok(scalar(@logfiles) == 1 or scalar(@logfiles) == 2);
 
@@ -65,6 +68,7 @@ foreach my $file (@logfiles) {
 	unlink $file;
 }
 
-ok($content =~ /$message/);
+ok($content =~ /$message1/);
+ok($content =~ /$message2/);
 
 #########################8

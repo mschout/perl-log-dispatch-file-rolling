@@ -10,7 +10,7 @@ use Fcntl ':flock'; # import LOCK_* constants
 
 our @ISA = qw(Log::Dispatch::File);
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 our $TIME_HIRES_AVAILABLE = undef;
 
@@ -18,7 +18,7 @@ BEGIN { # borrowed from Log::Log4perl::Layout::PatternLayout, Thanks!
 	# Check if we've got Time::HiRes. If not, don't make a big fuss,
 	# just set a flag so we know later on that we can't have fine-grained
 	# time stamps
-	
+
 	eval { require Time::HiRes; };
 	if ($@) {
 		$TIME_HIRES_AVAILABLE = 0;
@@ -32,14 +32,14 @@ BEGIN { # borrowed from Log::Log4perl::Layout::PatternLayout, Thanks!
 sub new {
 	my $proto = shift;
 	my $class = ref $proto || $proto;
-	
+
 	my %p = @_;
-	
+
 	my $self = bless {}, $class;
-	
+
 	# only append mode is supported
 	$p{mode} = 'append';
-	
+
 	# base class initialization
 	$self->_basic_init(%p);
 
@@ -62,7 +62,7 @@ sub new {
 	}
 
 	$self->_make_handle(%p);
-			
+
 	return $self;
 }
 
@@ -84,7 +84,7 @@ sub log_message { # parts borrowed from Log::Dispatch::FileRotate, Thanks!
 		$self->_unlock();
 		close($fh);
 		$self->{fh} = undef;
-	} elsif (defined $self->{fh} and $self->{rolling_fh_pid}||'' eq $$) { # flock won't work after a fork()
+	} elsif (defined $self->{fh} and $self->{rolling_fh_pid}||'' eq $$ and defined fileno $self->{fh}) { # flock won't work after a fork()
 		my $inode  = (stat($self->{fh}))[1];         # get real inode
 		my $finode = (stat($self->{filename}))[1];   # Stat the name for comparision
 		if(!defined($finode) || $inode != $finode) { # Oops someone moved things on us. So just reopen our log
@@ -143,11 +143,10 @@ sub _format {
 
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
-Log::Dispatch::File::Rolling - Object for logging to date/time/pid 
+Log::Dispatch::File::Rolling - Object for logging to date/time/pid
 stamped files
 
 =head1 SYNOPSIS
@@ -170,8 +169,8 @@ Log::Dispatch::* system.
 
 =head1 DESCRIPTION
 
-This module subclasses Log::Dispatch::File for logging to date/time 
-stamped files. See L<Log::Dispatch::File> for instructions on usage. 
+This module subclasses Log::Dispatch::File for logging to date/time
+stamped files. See L<Log::Dispatch::File> for instructions on usage.
 This module differs only on the following three points:
 
 =over 4
@@ -186,22 +185,22 @@ This module uses flock() to lock the file while writing to it.
 
 =item stamped filenames
 
-This module supports a special tag in the filename that will expand to 
+This module supports a special tag in the filename that will expand to
 the current date/time/pid.
 
-It is the same tag Log::Log4perl::Layout::PatternLayout uses, see 
-L<Log::Log4perl::Layout::PatternLayout>, chapter "Fine-tune the date". 
-In short: Include a "%d{...}" in the filename where "..." is a format 
-string according to the SimpleDateFormat in the Java World 
-(http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html). 
-See also L<Log::Log4perl::DateFormat> for information about further 
+It is the same tag Log::Log4perl::Layout::PatternLayout uses, see
+L<Log::Log4perl::Layout::PatternLayout>, chapter "Fine-tune the date".
+In short: Include a "%d{...}" in the filename where "..." is a format
+string according to the SimpleDateFormat in the Java World
+(http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html).
+See also L<Log::Log4perl::DateFormat> for information about further
 restrictions.
 
-In addition to the format provided by Log::Log4perl::DateFormat this 
-module also supports '$' for inserting the PID. Repeat the character to 
-define how many character wide the field should be. This should not be 
-needed regularly as this module also supports logfile sharing between 
-processes, but if you've got a high load on your logfile or a system 
+In addition to the format provided by Log::Log4perl::DateFormat this
+module also supports '$' for inserting the PID. Repeat the character to
+define how many character wide the field should be. This should not be
+needed regularly as this module also supports logfile sharing between
+processes, but if you've got a high load on your logfile or a system
 that doesn't support flock()...
 
 =head1 HISTORY
@@ -226,28 +225,34 @@ Initial coding
 
 =item 1.01
 
-Someone once said "Never feed them after midnight!"---Ok, let's append: 
+Someone once said "Never feed them after midnight!"---Ok, let's append:
 "Never submit any code after midnight..."
 
 Now it is working, I also included 4 tests.
 
 =item 1.02
 
-No code change, just updated Makefile.PL to include correct author 
+No code change, just updated Makefile.PL to include correct author
 information and prerequisites.
 
 =item 1.03
 
-Changed the syntax of the '$' format character because I noticed some 
-problems while making Log::Dispatch::File::Alerts. You need to change 
+Changed the syntax of the '$' format character because I noticed some
+problems while making Log::Dispatch::File::Alerts. You need to change
 your configuration!
+
+=item 1.04
+
+Got a bug report where the file handle got closed in mod-execution somehow.
+Added a additional check to re-open it instead of writing to a closed
+handle.
 
 =back
 
 =head1 SEE ALSO
 
-L<Log::Dispatch::File>, L<Log::Log4perl::Layout::PatternLayout>, 
-http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html, 
+L<Log::Dispatch::File>, L<Log::Log4perl::Layout::PatternLayout>,
+http://java.sun.com/j2se/1.3/docs/api/java/text/SimpleDateFormat.html,
 L<Log::Log4perl::DateFormat>, 'perldoc -f flock', 'perldoc -f fork'.
 
 =head1 AUTHOR
@@ -256,7 +261,7 @@ M. Jacob, E<lt>jacob@j-e-b.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2003 M. Jacob E<lt>jacob@j-e-b.netE<gt>
+Copyright (C) 2003, 2004 M. Jacob E<lt>jacob@j-e-b.netE<gt>
 
 Based on:
 
@@ -264,6 +269,6 @@ Based on:
   Log::Dispatch::FileRotate by Mark Pfeiffer, <markpf@mlp-consulting.com.au>
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself. 
+it under the same terms as Perl itself.
 
 =cut
