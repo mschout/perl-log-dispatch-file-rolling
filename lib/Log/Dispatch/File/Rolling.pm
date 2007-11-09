@@ -1,3 +1,4 @@
+## no critic
 package Log::Dispatch::File::Rolling;
 
 use 5.006001;
@@ -10,7 +11,7 @@ use Fcntl ':flock'; # import LOCK_* constants
 
 our @ISA = qw(Log::Dispatch::File);
 
-our $VERSION = '1.04';
+our $VERSION = '1.05';
 
 our $TIME_HIRES_AVAILABLE = undef;
 
@@ -144,6 +145,8 @@ sub _format {
 1;
 __END__
 
+=for changes stop
+
 =head1 NAME
 
 Log::Dispatch::File::Rolling - Object for logging to date/time/pid
@@ -203,6 +206,24 @@ needed regularly as this module also supports logfile sharing between
 processes, but if you've got a high load on your logfile or a system
 that doesn't support flock()...
 
+=back
+
+=head1 METHODS
+
+=over 4
+
+=item new()
+
+See L<Log::Dispatch::File> and chapter DESCRIPTION above.
+
+=item log_message()
+
+See L<Log::Dispatch::File> and chapter DESCRIPTION above.
+
+=back
+
+=for changes continue
+
 =head1 HISTORY
 
 =over 8
@@ -243,11 +264,17 @@ your configuration!
 
 =item 1.04
 
-Got a bug report where the file handle got closed in mod-execution somehow.
+Got a bug report where the file handle got closed in mid-execution somehow.
 Added a additional check to re-open it instead of writing to a closed
 handle.
 
+=item 1.05
+
+Updated packaging for newer standards. No changes to the coding.
+
 =back
+
+=for changes stop
 
 =head1 SEE ALSO
 
@@ -261,7 +288,7 @@ M. Jacob, E<lt>jacob@j-e-b.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2003, 2004 M. Jacob E<lt>jacob@j-e-b.netE<gt>
+Copyright (C) 2003, 2004, 2007 M. Jacob E<lt>jacob@j-e-b.netE<gt>
 
 Based on:
 
