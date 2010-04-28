@@ -11,7 +11,7 @@ use Fcntl ':flock'; # import LOCK_* constants
 
 our @ISA = qw(Log::Dispatch::File);
 
-our $VERSION = '1.05';
+our $VERSION = '1.06';
 
 our $TIME_HIRES_AVAILABLE = undef;
 
@@ -62,6 +62,7 @@ sub new {
 		$p{filename} = $self->_createFilename();
 	}
 
+	$self->{rolling_fh_pid} = $$;
 	$self->_make_handle(%p);
 
 	return $self;
@@ -85,7 +86,7 @@ sub log_message { # parts borrowed from Log::Dispatch::FileRotate, Thanks!
 		$self->_unlock();
 		close($fh);
 		$self->{fh} = undef;
-	} elsif (defined $self->{fh} and $self->{rolling_fh_pid}||'' eq $$ and defined fileno $self->{fh}) { # flock won't work after a fork()
+	} elsif (defined $self->{fh} and ($self->{rolling_fh_pid}||'') eq $$ and defined fileno $self->{fh}) { # flock won't work after a fork()
 		my $inode  = (stat($self->{fh}))[1];         # get real inode
 		my $finode = (stat($self->{filename}))[1];   # Stat the name for comparision
 		if(!defined($finode) || $inode != $finode) { # Oops someone moved things on us. So just reopen our log
@@ -272,6 +273,18 @@ handle.
 
 Updated packaging for newer standards. No changes to the coding.
 
+=item 1.06
+
+Fixed a subtle bug that prevented us from locking the logfile after a fork if no 
+PID was used in the filename. 
+
+Also disabled forced double opening of the logfile at startup. It was in place 
+because I didn't trust L<Log::Dispatch::File> to really open the file at the 
+right moment.
+
+Thanks to Peter Lobsinger for the patch. Please always wrap non-standard Test::* 
+modules in eval and make your testfile clean up after itself... ;)
+
 =back
 
 =for changes stop
@@ -288,7 +301,7 @@ M. Jacob, E<lt>jacob@j-e-b.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2003, 2004, 2007 M. Jacob E<lt>jacob@j-e-b.netE<gt>
+Copyright (C) 2003, 2004, 2007, 2010 M. Jacob E<lt>jacob@j-e-b.netE<gt>
 
 Based on:
 

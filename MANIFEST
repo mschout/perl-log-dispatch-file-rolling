@@ -12,3 +12,4 @@ t/6.t
 META.yml
 t/7testpod.t
 t/8coverage.t
+t/9reopenfh.t

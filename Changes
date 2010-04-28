@@ -29,3 +29,14 @@ HISTORY
 
     1.05    Updated packaging for newer standards. No changes to the coding.
 
+    1.06    Fixed a subtle bug that prevented us from locking the logfile
+            after a fork if no PID was used in the filename.
+
+            Also disabled forced double opening of the logfile at startup.
+            It was in place because I didn't trust Log::Dispatch::File to
+            really open the file at the right moment.
+
+            Thanks to Peter Lobsinger for the patch. Please always wrap
+            non-standard Test::* modules in eval and make your testfile
+            clean up after itself... ;)
+
