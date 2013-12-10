@@ -5,13 +5,13 @@ use 5.006001;
 use strict;
 use warnings;
 
-use Log::Dispatch::File;
+use Log::Dispatch::File '2.30';
 use Log::Log4perl::DateFormat;
 use Fcntl ':flock'; # import LOCK_* constants
 
 our @ISA = qw(Log::Dispatch::File);
 
-our $VERSION = '1.06';
+our $VERSION = '1.07';
 
 our $TIME_HIRES_AVAILABLE = undef;
 
@@ -49,21 +49,21 @@ sub new {
 		$self->{rolling_filename_prefix}  = $1;
 		$self->{rolling_filename_postfix} = $3;
 		$self->{rolling_filename_format}  = Log::Log4perl::DateFormat->new($2);
-		$p{filename} = $self->_createFilename();
+		$self->{filename} = $self->_createFilename();
 	} elsif ($p{filename} =~ /^(.*)(\.[^\.]+)$/) {
 		$self->{rolling_filename_prefix}  = $1;
 		$self->{rolling_filename_postfix} = $2;
 		$self->{rolling_filename_format}  = Log::Log4perl::DateFormat->new('-yyyy-MM-dd');
-		$p{filename} = $self->_createFilename();
+		$self->{filename} = $self->_createFilename();
 	} else {
 		$self->{rolling_filename_prefix}  = $p{filename};
 		$self->{rolling_filename_postfix} = '';
 		$self->{rolling_filename_format}  = Log::Log4perl::DateFormat->new('.yyyy-MM-dd');
-		$p{filename} = $self->_createFilename();
+		$self->{filename} = $self->_createFilename();
 	}
 
 	$self->{rolling_fh_pid} = $$;
-	$self->_make_handle(%p);
+	$self->_make_handle();
 
 	return $self;
 }
@@ -284,6 +284,11 @@ right moment.
 
 Thanks to Peter Lobsinger for the patch. Please always wrap non-standard Test::* 
 modules in eval and make your testfile clean up after itself... ;)
+
+=item 1.07
+
+Fixed rt.cpan.org bug #89001. Seems L<Log::Dispatch::File> changed its 
+initialization procedure---and we are inheriting from it.
 
 =back
 

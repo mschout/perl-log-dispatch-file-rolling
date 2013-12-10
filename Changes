@@ -40,3 +40,6 @@ HISTORY
             non-standard Test::* modules in eval and make your testfile
             clean up after itself... ;)
 
+    1.07    Fixed rt.cpan.org bug #89001. Seems Log::Dispatch::File changed
+            its initialization procedure---and we are inheriting from it.
+

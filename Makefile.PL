@@ -7,7 +7,7 @@ WriteMakefile(
 	'VERSION_FROM'  => 'lib/Log/Dispatch/File/Rolling.pm', # finds $VERSION
 	'PREREQ_PM'     => {
 		'Log::Log4perl' => '0.32',
-		'Log::Dispatch' => '2.06',
+		'Log::Dispatch' => '2.30',
 #		'Pod::Readme'   => '0.05', # only needed for 'make dist'
 	},
 	($] >= 5.005 ? (   ## Add these new keywords supported since 5.005

@@ -13,3 +13,4 @@ META.yml
 t/7testpod.t
 t/8coverage.t
 t/9reopenfh.t
+META.json                                Module JSON meta-data (added by MakeMaker)

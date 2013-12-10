@@ -1,23 +1,23 @@
---- #YAML:1.0
-name:               Log-Dispatch-File-Rolling
-version:            1.06
-abstract:           Object for logging to date/time/pid
+---
+abstract: "Object for logging to date/time/pid\r"
 author:
-    - M. Jacob <jacob@j-e-b.net>
-license:            perl
-distribution_type:  module
-configure_requires:
-    ExtUtils::MakeMaker:  0
+  - 'M. Jacob <jacob@j-e-b.net>'
 build_requires:
-    ExtUtils::MakeMaker:  0
-requires:
-    Log::Dispatch:  2.06
-    Log::Log4perl:  0.32
-no_index:
-    directory:
-        - t
-        - inc
-generated_by:       ExtUtils::MakeMaker version 6.56
+  ExtUtils::MakeMaker: 0
+configure_requires:
+  ExtUtils::MakeMaker: 0
+dynamic_config: 1
+generated_by: 'ExtUtils::MakeMaker version 6.64, CPAN::Meta::Converter version 2.112621'
+license: perl
 meta-spec:
-    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
-    version:  1.4
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Log-Dispatch-File-Rolling
+no_index:
+  directory:
+    - t
+    - inc
+requires:
+  Log::Dispatch: 2.30
+  Log::Log4perl: 0.32
+version: 1.07
