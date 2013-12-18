@@ -43,3 +43,7 @@ HISTORY
     1.07    Fixed rt.cpan.org bug #89001. Seems Log::Dispatch::File changed
             its initialization procedure---and we are inheriting from it.
 
+    1.08    Fixed dependency on Log::Dispatch::File. The change in 1.07 only
+            works with 2.37 or later. For older versions of
+            Log::Dispatch::File use 1.06.
+

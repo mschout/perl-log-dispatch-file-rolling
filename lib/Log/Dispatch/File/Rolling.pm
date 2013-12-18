@@ -5,13 +5,13 @@ use 5.006001;
 use strict;
 use warnings;
 
-use Log::Dispatch::File '2.30';
+use Log::Dispatch::File '2.37';
 use Log::Log4perl::DateFormat;
 use Fcntl ':flock'; # import LOCK_* constants
 
 our @ISA = qw(Log::Dispatch::File);
 
-our $VERSION = '1.07';
+our $VERSION = '1.08';
 
 our $TIME_HIRES_AVAILABLE = undef;
 
@@ -289,6 +289,11 @@ modules in eval and make your testfile clean up after itself... ;)
 
 Fixed rt.cpan.org bug #89001. Seems L<Log::Dispatch::File> changed its 
 initialization procedure---and we are inheriting from it.
+
+=item 1.08
+
+Fixed dependency on L<Log::Dispatch::File>. The change in 1.07 only works with
+2.37 or later. For older versions of L<Log::Dispatch::File> use 1.06.
 
 =back
 
