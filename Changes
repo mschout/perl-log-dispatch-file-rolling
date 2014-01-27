@@ -47,3 +47,6 @@ HISTORY
             works with 2.37 or later. For older versions of
             Log::Dispatch::File use 1.06.
 
+    1.09    Dependency change of 1.08 was missing from the Makefile.PL.
+            Oops.
+

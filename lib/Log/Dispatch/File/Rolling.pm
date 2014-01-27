@@ -11,7 +11,7 @@ use Fcntl ':flock'; # import LOCK_* constants
 
 our @ISA = qw(Log::Dispatch::File);
 
-our $VERSION = '1.08';
+our $VERSION = '1.09';
 
 our $TIME_HIRES_AVAILABLE = undef;
 
@@ -295,6 +295,10 @@ initialization procedure---and we are inheriting from it.
 Fixed dependency on L<Log::Dispatch::File>. The change in 1.07 only works with
 2.37 or later. For older versions of L<Log::Dispatch::File> use 1.06.
 
+=item 1.09
+
+Dependency change of 1.08 was missing from the Makefile.PL. Oops.
+
 =back
 
 =for changes stop
@@ -311,7 +315,7 @@ M. Jacob, E<lt>jacob@j-e-b.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2003, 2004, 2007, 2010 M. Jacob E<lt>jacob@j-e-b.netE<gt>
+Copyright (C) 2003, 2004, 2007, 2010, 2013 M. Jacob E<lt>jacob@j-e-b.netE<gt>
 
 Based on:
 
