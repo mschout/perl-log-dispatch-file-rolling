@@ -32,7 +32,7 @@
       },
       "runtime" : {
          "requires" : {
-            "Log::Dispatch" : "2.37",
+            "Log::Dispatch" : "2.59",
             "Log::Log4perl" : "0.32"
          }
       }
